@@ -3,7 +3,7 @@ Convert JourneyMap Waypoints to Xaero Waypoints
 
 # Warning
 
-This will delete any Xaero Waypoints you have defined already for your selected server being converted.
+This will overwrite any Xaero Waypoints you have defined already for your selected server being converted.
 
 # Usage
 
