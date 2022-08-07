@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+}
+
+group 'com.github.rfresh2'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+dependencies {
+    shade 'com.fasterxml.jackson.core:jackson-core:2.13.3'
+    shade 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+}
+
+jar {
+    from {
+        configurations.shade.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }.unique()
+    } {
+        exclude "META-INF/**"
+        exclude sourceSets.main.output.asFileTree.collect {
+            return it.getPath().split("java/main/").last()
+        }
+    }
+    manifest {
+        attributes "Implementation-Title": "JourneyMapWaypointsToXaero",
+                "Implementation-Version": "1.0",
+                "Main-Class": "com.github.rfresh2.JourneyMapWaypointsToXaero"
+    }
+}
