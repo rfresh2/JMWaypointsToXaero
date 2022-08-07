@@ -67,6 +67,7 @@ public class JourneyMapWaypointsToXaero {
                 .filter(wp -> wp.dimension == dimension)
                 .forEach(wp -> outputFileContents.append(wp).append("\n"));
         try {
+            System.out.println("Writing waypoints for dimension: " + dimension + " to: " + fileOut);
             Files.write(fileOut, outputFileContents.toString().getBytes(StandardCharsets.UTF_8), openOption);
         } catch (IOException e) {
             System.out.println("Failed writing Xaero waypoint outputs");
@@ -84,6 +85,7 @@ public class JourneyMapWaypointsToXaero {
     }
 
     public static XaeroWaypoint convertWaypoint(final JourneyMapWaypoint journeyMapWaypoint) {
+        System.out.println("Converting waypoint: " + journeyMapWaypoint.name);
         int dimension = determineDimension(journeyMapWaypoint);
         return new XaeroWaypoint(
                 journeyMapWaypoint.name,
