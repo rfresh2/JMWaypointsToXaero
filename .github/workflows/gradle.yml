@@ -1,0 +1,46 @@
+name: Build Mod
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Elevate wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: Loading gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build mod
+        run: ./gradlew --build-cache build
+
+      - name: Rename built mod
+        run: mv build/libs/JMWaypointsToXaero*.jar JMWaypointsToXaero-${{ github.run_number }}.jar
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: JMWaypointsToXaero-${{ github.run_number }}
+          path: JMWaypointsToXaero-${{ github.run_number }}.jar
