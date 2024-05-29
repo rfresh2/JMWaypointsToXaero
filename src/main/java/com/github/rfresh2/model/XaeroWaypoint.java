@@ -10,9 +10,6 @@ public class XaeroWaypoint {
     public int x;
     public int y;
     public int z;
-    /**
-     * Color index
-     */
     public int color;
     public boolean disabled;
     public int type;

@@ -12,6 +12,7 @@ import com.github.rfresh2.model.XaeroWaypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,7 +23,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 public class JourneyMapWaypointsToXaero {
@@ -37,7 +37,6 @@ public class JourneyMapWaypointsToXaero {
         // we want to try modern, and if it fails, try legacy
         objectMapper.coercionConfigFor(LogicalType.Textual).setCoercion(CoercionInputShape.Integer, CoercionAction.Fail);
     }
-    static final Random random = new Random();
     static final Logger LOG = LoggerFactory.getLogger("JMWaypointsToXaero");
 
     public static void main(final String[] args) {
@@ -47,7 +46,6 @@ public class JourneyMapWaypointsToXaero {
         }
         String input = args[0];
         String output = args[1];
-
         Path folderIn = new File(String.format("%s/waypoints/", input)).toPath();
         LOG.info("Reading JM waypoints from path: {}", folderIn.toAbsolutePath());
         List<XaeroWaypoint> xaeroWaypoints = convertWaypoints(folderIn);
@@ -128,7 +126,7 @@ public class JourneyMapWaypointsToXaero {
                 (dimension == -1 ? jmWaypoint.getX() / 8 : jmWaypoint.getX()), // jm stores all wp in ow coords
                 jmWaypoint.getY(),
                 (dimension == -1 ? jmWaypoint.getZ() / 8 : jmWaypoint.getZ()),
-                random.nextInt(16), // todo: convert JM rgb to some equivalent Xaero color
+                ColorHelper.nearestXaeroColorIndex(new Color(jmWaypoint.getR(), jmWaypoint.getG(), jmWaypoint.getB())),
                 !jmWaypoint.isEnabled(),
                 0,
                 "gui.xaero_default",
