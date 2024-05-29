@@ -47,6 +47,10 @@ public class JourneyMapWaypointsToXaero {
         String input = args[0];
         String output = args[1];
         Path folderIn = new File(String.format("%s/waypoints/", input)).toPath();
+        if (Files.notExists(folderIn)) {
+            LOG.error("Input folder does not exist: {}", folderIn);
+            System.exit(1);
+        }
         LOG.info("Reading JM waypoints from path: {}", folderIn.toAbsolutePath());
         List<XaeroWaypoint> xaeroWaypoints = convertWaypoints(folderIn);
         xaeroWaypoints.stream()
