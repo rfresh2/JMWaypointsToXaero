@@ -20,6 +20,8 @@ repositories {
 dependencies {
     shade("com.fasterxml.jackson.core:jackson-core:2.17.1")
     shade("com.fasterxml.jackson.core:jackson-databind:2.17.1")
+    shade("org.slf4j:slf4j-api:2.0.13")
+    shade("org.slf4j:slf4j-simple:2.0.13")
 }
 
 tasks {
