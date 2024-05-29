@@ -9,7 +9,7 @@ This will overwrite any Xaero Waypoints you have defined already for your select
 
 Download the latest jar from releases
 
-`java -jar JMWaypointstoXaero-1.0.jar <input folder> <output folder>`
+`java -jar JMWaypointstoXaero-1.1.jar <input folder> <output folder>`
 
 Input folder is your JourneyMap directory for your selected world.
 
@@ -23,7 +23,7 @@ Example:
 
 # Full command example
 
-`java -jar JMWaypointsToXaero-1.0.jar "C:\Users\rfresh2\AppData\Roaming\.minecraft\journeymap\data\mp\2b2t" "C:\Users\rfresh2\AppData\Roaming\.minecraft\XaeroWaypoints\Multiplayer_2b2t.org"`
+`java -jar JMWaypointsToXaero-1.1.jar "C:\Users\rfresh2\AppData\Roaming\.minecraft\journeymap\data\mp\2b2t" "C:\Users\rfresh2\AppData\Roaming\.minecraft\XaeroWaypoints\Multiplayer_2b2t.org"`
 
 # Additional References
 

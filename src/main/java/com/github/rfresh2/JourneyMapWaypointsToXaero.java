@@ -105,14 +105,14 @@ public class JourneyMapWaypointsToXaero {
     }
 
     public static int determineDimension(final JourneyMapWaypoint journeyMapWaypoint) {
-        if (journeyMapWaypoint.dimensions.contains(1)) {
+        if (journeyMapWaypoint.dimensions.contains("minecraft:the_end")) {
             return 1;
         }
         // prefer defining waypoints as ow instead of nether, even if journeymap wp is visible in nether
-        if (journeyMapWaypoint.dimensions.contains(0)) {
+        if (journeyMapWaypoint.dimensions.contains("minecraft:overworld")) {
             return 0;
         }
-        if (journeyMapWaypoint.dimensions.contains(-1)) {
+        if (journeyMapWaypoint.dimensions.contains("minecraft:the_nether")) {
             return -1;
         }
         return 0; //default
@@ -171,6 +171,8 @@ public class JourneyMapWaypointsToXaero {
         String name;
         @JsonProperty("icon")
         String icon;
+        @JsonProperty("colorizedIcon")
+        String colorizedIcon;
         // always stored as overworld coords
         @JsonProperty("x")
         int x;
@@ -191,13 +193,19 @@ public class JourneyMapWaypointsToXaero {
         @JsonProperty("origin")
         String origin;
         @JsonProperty("dimensions")
-        List<Integer> dimensions;
+        List<String> dimensions;
         @JsonProperty("persistent")
         boolean persistent;
+        @JsonProperty("showDeviation")
+        boolean showDeviation;
+        @JsonProperty("iconColor")
+        int iconColor;
+        @JsonProperty("customIconColor")
+        boolean customIconColor;
 
         public JourneyMapWaypoint() {}
 
-        public JourneyMapWaypoint(String id, String name, String icon, int x, int y, int z, int r, int g, int b, boolean enable, String type, String origin, List<Integer> dimensions, boolean persistent) {
+        public JourneyMapWaypoint(String id, String name, String icon, int x, int y, int z, int r, int g, int b, boolean enable, String type, String origin, List<String> dimensions, boolean persistent) {
             this.id = id;
             this.name = name;
             this.icon = icon;

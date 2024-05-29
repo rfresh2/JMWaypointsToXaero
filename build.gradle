@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.github.rfresh2'
-version '1.0'
+version '1.1'
 
 repositories {
     mavenCentral()
@@ -15,8 +15,10 @@ configurations {
 }
 
 dependencies {
-    shade 'com.fasterxml.jackson.core:jackson-core:2.13.3'
-    shade 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.17.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.1'
+    shade 'com.fasterxml.jackson.core:jackson-core:2.17.1'
+    shade 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
 }
 
 jar {
