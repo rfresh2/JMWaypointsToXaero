@@ -1,6 +1,6 @@
 plugins {
     java
-    id("io.github.goooler.shadow") version "8.1.7"
+    id("io.github.goooler.shadow") version "8.1.8"
 }
 
 group = "com.github.rfresh2"
