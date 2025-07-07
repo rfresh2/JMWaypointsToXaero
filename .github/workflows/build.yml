@@ -13,9 +13,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Gradle Wrapper Verification
-        uses: gradle/wrapper-validation-action@v3
-
       - name: Set up JDK 8
         uses: actions/setup-java@v4
         with:
@@ -25,13 +22,16 @@ jobs:
       - name: Elevate wrapper permissions
         run: chmod +x ./gradlew
 
-      - name: Build
-        uses: gradle/gradle-build-action@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
-          arguments: build
+          dependency-graph: generate-and-submit
+
+      - name: Build
+        run: ./gradlew build
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: JMWaypointsToXaero
-          path: JMWaypointsToXaero-*.jar
+          path: build/libs/JMWaypointsToXaero-*.jar

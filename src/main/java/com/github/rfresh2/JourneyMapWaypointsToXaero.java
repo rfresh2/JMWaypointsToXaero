@@ -9,6 +9,9 @@ import com.github.rfresh2.model.IJMWaypoint;
 import com.github.rfresh2.model.JMWaypointLegacy;
 import com.github.rfresh2.model.JMWaypointModern;
 import com.github.rfresh2.model.XaeroWaypoint;
+import com.viaversion.nbt.io.NBTIO;
+import com.viaversion.nbt.tag.CompoundTag;
+import com.viaversion.nbt.tag.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -60,7 +64,31 @@ public class JourneyMapWaypointsToXaero {
     }
 
     private static List<XaeroWaypoint> convertWaypoints(Path inputFolder) {
-        return Arrays.stream(Objects.requireNonNull(inputFolder.toFile().listFiles()))
+        File inputFolderFile = inputFolder.toFile();
+        List<File> files = Arrays.asList(Objects.requireNonNull(inputFolderFile.listFiles()));
+
+        for (File file : files) {
+            if (file.getName().equals("WaypointData.dat")) {
+                LOG.info("Found JourneyMap NBT waypoint data file: {}", file.getAbsolutePath());
+                try {
+                    List<JMWaypointModern> jmWaypoints = readNbtWaypoints(file.toPath());
+                    return jmWaypoints.stream()
+                        .peek(wp -> LOG.info("Found {} JM waypoint: {} [{}, {}, {}]",
+                            "nbt",
+                            wp.getName(),
+                            wp.getX(),
+                            wp.getY(),
+                            wp.getZ()))
+                        .map(JourneyMapWaypointsToXaero::convertWaypoint)
+                        .collect(Collectors.toList());
+                } catch (Exception e) {
+                    LOG.error("Error reading WaypointData.dat file: {}", file.getAbsolutePath(), e);
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return files.stream()
             .map(JourneyMapWaypointsToXaero::parseJourneyMapWaypointFile)
             .filter(Objects::nonNull)
             .peek(wp -> LOG.info("Found {} JM waypoint: {} [{}, {}, {}]",
@@ -139,5 +167,27 @@ public class JourneyMapWaypointsToXaero {
                 0,
                 dimension
         );
+    }
+
+    public static List<JMWaypointModern> readNbtWaypoints(Path nbtSrc) throws Exception {
+        List<JMWaypointModern> waypoints = new ArrayList<>();
+        CompoundTag tag = (CompoundTag) NBTIO.reader().named().read(nbtSrc, false);
+        CompoundTag waypointsTag = tag.getCompoundTag("waypoints");
+        for (Tag waypointTagEntry : waypointsTag.values()) {
+            CompoundTag e = (CompoundTag) waypointTagEntry;
+            String waypointName = e.getString("name");
+            CompoundTag posTag = e.getCompoundTag("pos");
+            int x = posTag.getInt("x");
+            int y = posTag.getInt("y");
+            int z = posTag.getInt("z");
+            String dimension = posTag.getString("dimension");
+            int color = e.getInt("color");
+            int r = color >> 16 & 0xFF;
+            int g = color >> 8 & 0xFF;
+            int b = color & 0xFF;
+            JMWaypointModern jmWaypointJsonModern = new JMWaypointModern(waypointName, x, y, z, r, g, b, true, new String[]{dimension});
+            waypoints.add(jmWaypointJsonModern);
+        }
+        return waypoints;
     }
 }
