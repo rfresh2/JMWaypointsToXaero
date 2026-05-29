@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.rfresh2"
-version = "1.2"
+version = "1.3"
 
 val shade: Configuration by configurations.creating
 configurations.implementation.get().extendsFrom(shade)
