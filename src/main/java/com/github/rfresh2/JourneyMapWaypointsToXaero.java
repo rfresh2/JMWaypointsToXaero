@@ -19,10 +19,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,16 +41,26 @@ public class JourneyMapWaypointsToXaero {
     static final Logger LOG = LoggerFactory.getLogger("JMWaypointsToXaero");
 
     public static void main(final String[] args) {
-        if (args.length < 2) {
+        if (args.length == 0) {
+            JourneyMapWaypointsToXaeroGui.launch();
+            return;
+        }
+        if (args.length != 2) {
             LOG.error("Usage: <input folder> <output folder>");
             System.exit(1);
         }
-        String input = args[0];
-        String output = args[1];
-        Path folderIn = new File(String.format("%s/waypoints/", input)).toPath();
-        if (Files.notExists(folderIn)) {
-            LOG.error("Input folder does not exist: {}", folderIn);
+        try {
+            convert(args[0], args[1]);
+        } catch (RuntimeException e) {
+            LOG.error("Conversion failed", e);
             System.exit(1);
+        }
+    }
+
+    public static int convert(String input, String output) {
+        Path folderIn = Paths.get(input, "waypoints");
+        if (!Files.isDirectory(folderIn)) {
+            throw new IllegalArgumentException("Input folder does not exist: " + folderIn);
         }
         LOG.info("Reading JM waypoints from path: {}", folderIn.toAbsolutePath());
         List<XaeroWaypoint> xaeroWaypoints = convertWaypoints(folderIn);
@@ -61,6 +68,7 @@ public class JourneyMapWaypointsToXaero {
             .map(wp -> wp.dimension)
             .distinct()
             .forEach(dim -> writeDimensionWaypoints(output, dim, xaeroWaypoints));
+        return xaeroWaypoints.size();
     }
 
     private static List<XaeroWaypoint> convertWaypoints(Path inputFolder) {
@@ -102,17 +110,16 @@ public class JourneyMapWaypointsToXaero {
     }
 
     private static void writeDimensionWaypoints(String outputDir, int dimension, List<XaeroWaypoint> waypoints) {
-        Path folderOut = new File(String.format("%s/%s/", outputDir, "dim%" + dimension)).toPath();
-        Path fileOut = new File(folderOut + "/mw$default_1.txt").toPath();
+        Path folderOut = Paths.get(outputDir, "dim%" + dimension);
+        Path fileOut = folderOut.resolve("mw$default_1.txt");
 
-        File folderCheck = new File(String.valueOf(folderOut.toFile()));
-        File parentCheck = new File(String.valueOf(folderOut.toFile().getParentFile()));
-        if (!parentCheck.exists()) {
-            parentCheck.mkdir();
-            folderCheck.mkdir();
-        } else if (!folderCheck.exists()) {
-            folderCheck.mkdir();
+        try {
+            Files.createDirectories(folderOut);
+        } catch (IOException e) {
+            LOG.error("Failed creating Xaero waypoint output directory: {}", folderOut, e);
+            throw new RuntimeException(e);
         }
+
         File outFileCheck = fileOut.toFile();
         OpenOption openOption = StandardOpenOption.CREATE;
         final StringBuilder outputFileContents = new StringBuilder();
@@ -131,6 +138,7 @@ public class JourneyMapWaypointsToXaero {
             Files.write(fileOut, outputFileContents.toString().getBytes(StandardCharsets.UTF_8), openOption);
         } catch (IOException e) {
             LOG.error("Failed writing Xaero waypoint outputs", e);
+            throw new RuntimeException(e);
         }
     }
 

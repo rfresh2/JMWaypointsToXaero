@@ -30,7 +30,7 @@ Example:
 
 # Full command example
 
-`java -jar JMWaypointsToXaero-1.1.jar "C:\Users\rfresh2\AppData\Roaming\.minecraft\journeymap\data\mp\2b2t" "C:\Users\rfresh2\AppData\Roaming\.minecraft\xaero\minimap\Multiplayer_2b2t.org"`
+`java -jar JMWaypointsToXaero-1.2.jar "C:\Users\rfresh2\AppData\Roaming\.minecraft\journeymap\data\mp\2b2t" "C:\Users\rfresh2\AppData\Roaming\.minecraft\xaero\minimap\Multiplayer_2b2t.org"`
 
 # Additional References
 

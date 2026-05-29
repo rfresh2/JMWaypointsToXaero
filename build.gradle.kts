@@ -19,11 +19,12 @@ repositories {
 }
 
 dependencies {
-    shade("com.fasterxml.jackson.core:jackson-core:2.18.4")
-    shade("com.fasterxml.jackson.core:jackson-databind:2.18.4")
-    shade("org.slf4j:slf4j-api:2.0.17")
-    shade("org.slf4j:slf4j-simple:2.0.17")
-    shade("com.viaversion:nbt:5.1.1")
+    shade("com.fasterxml.jackson.core:jackson-core:2.21.3")
+    shade("com.fasterxml.jackson.core:jackson-databind:2.21.3")
+    shade("org.slf4j:slf4j-api:2.0.18")
+    shade("org.slf4j:slf4j-simple:2.0.18")
+    shade("com.viaversion:nbt:5.2.1")
+    shade("com.formdev:flatlaf:3.7.1")
 }
 
 tasks {
