@@ -1,6 +1,6 @@
 plugins {
     java
-    id("com.gradleup.shadow") version "8.3.7"
+    id("com.gradleup.shadow") version "9.4.2"
 }
 
 group = "com.github.rfresh2"
